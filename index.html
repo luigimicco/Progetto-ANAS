@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NACT-ANAS-SICILIA</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./css/style.css">    
+
+</head>
+<body>
+    <div id="app">
+
+        <div id="map" class="map-container"></div>
+        <div class="sidebar">
+            <div class="header">
+                <h1>NACT-ANAS-SICILIA</h1>
+                <div class="stats">
+                    <span>Totali: {{ roads.length }}</span>
+                    <span>Visibili: {{ visibleCount }}</span>
+                    <span>Interrotte: {{ interruptedCount }}</span>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <h3>Filtri Tipo Strada</h3>
+                <div class="filter-checkboxes">
+                    <label v-for="type in availableTypes" :key="type" class="filter-label">
+                        <input type="checkbox" 
+                               :value="type" 
+                               :checked="activeFilters.includes(type)" 
+                               @change="toggleFilter(type)">
+                        <span>{{ type }}</span>
+                        <span class="badge">{{ roads.filter(r =&gt; r.type === type).length }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="roads-list">
+                <h3>Gestione Strade</h3>
+                <div v-for="road in filteredRoads" :key="road.id" 
+                     class="road-card" 
+                     :class="{ interrupted: road.isInterrotta }">
+                    <div class="road-header">
+                        <span class="road-type" :class="'type-' + road.type.toLowerCase()">{{ road.type }}</span>
+                        <h4>{{ road.name }}</h4>
+                    </div>
+                    <div class="road-info">
+                        <span>{{ road.length }} km</span>
+                        <span>{{ road.provincia }}</span>
+                    </div>
+                    <div class="road-controls">
+                        <label class="toggle-switch">
+                            <input type="checkbox" 
+                                   :checked="road.isInterrotta" 
+                                   @change="toggleInterrotta(road)">
+                            <span class="slider"></span>
+                            <span class="label">{{ road.isInterrotta ? 'Interrotta' : 'Attiva' }}</span>
+                        </label>
+                        <button @click="focusOnRoad(road)" class="btn-focus">🎯 Focus</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./js/script.js"></script>    
+
+</body>
+</html>
